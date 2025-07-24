@@ -115,4 +115,3 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 - Chest X-ray datasets (e.g., NIH ChestX-ray14)
 - Open-source CNN architectures
 - Flask and Python community
-```
