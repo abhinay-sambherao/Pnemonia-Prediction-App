@@ -1,0 +1,11 @@
+Flask
+Flask-SQLAlchemy
+Flask-Login
+Flask-WTF
+Flask-Limiter
+Flask-Talisman
+python-dotenv
+tensorflow
+numpy
+geopy
+requests

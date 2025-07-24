@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pneumonia Prediction App</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4895ef;
+        --danger-color: #ef476f;
+        --success-color: #06d6a0;
+        --warning-color: #ffd60a;
+        --light-bg: #f8f9fa;
+        --dark-text: #2b2d42;
+        --light-text: #8d99ae;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.6;
+        background: linear-gradient(135deg, #f6f8ff 0%, #ffffff 100%);
+        color: var(--dark-text);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .container {
+        flex: 1;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .app-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+
+      .app-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .app-header p {
+        color: var(--light-text);
+        font-size: 1.1rem;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
+
+      .card {
+        background: var(--white);
+        border-radius: 20px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.08);
+        height: fit-content;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(67, 97, 238, 0.12);
+      }
+
+      .upload-section {
+        position: relative;
+      }
+
+      .results-section {
+        position: relative;
+      }
+
+      .file-input-container {
+        margin: 2rem 0;
+      }
+
+      /* Hide the default file input */
+      input[type="file"] {
+        display: none;
+      }
+
+      /* Enhanced file input trigger styling */
+      .file-input-trigger {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        border: 2px dashed var(--primary-color);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .file-input-trigger:hover {
+        background: rgba(67, 97, 238, 0.05);
+      }
+
+      #preview-image {
+        max-width: 100%;
+        height: auto;
+        margin: 1rem 0;
+        border-radius: 10px;
+      }
+
+      .prediction-result {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: var(--light-bg);
+      }
+
+      .hospitals-section {
+        grid-column: span 2;
+        margin-top: 2rem;
+      }
+
+      .hospital-item {
+        background: var(--white);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid rgba(67, 97, 238, 0.1);
+      }
+
+      .hospital-item:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.12);
+      }
+
+      .hospital-item h4 {
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+      }
+
+      .hospital-contact {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: 8px;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.15);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: var(--white);
+      }
+
+      .btn-primary:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid var(--light-bg);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s linear infinite;
+        margin-left: 10px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      #locationStatus {
+        text-align: center;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+
+      .emergency {
+        color: var(--danger-color);
+        font-weight: 500;
+        margin-top: 0.5rem;
+      }
+
+      @media (max-width: 1024px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+
+        .hospitals-section {
+          grid-column: span 1;
+        }
+
+        .container {
+          padding: 1rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .card {
+          padding: 1.5rem;
+        }
+
+        .file-input-trigger {
+          padding: 1.5rem;
+        }
+      }
+
+      /* Ensure proper spacing for model predictions */
+      #modelPredictions {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        background: var(--light-bg);
+        border-radius: 10px;
+      }
+
+      /* Better spacing for buttons */
+      .action-buttons {
+        display: flex;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        flex-wrap: wrap;
+      }
+
+      /* Improve hospital list spacing */
+      #hospitalsList {
+        display: grid;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .result-card {
+        padding: 2rem;
+        border-radius: 20px;
+        background: linear-gradient(135deg, #fff 0%, #f8f9ff 100%);
+      }
+
+      .pneumonia-detected {
+        background: linear-gradient(135deg, #fff5f6 0%, #fff 100%);
+        border-left: 5px solid var(--danger-color);
+      }
+
+      .prediction-summary {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.95) 0%,
+          rgba(248, 249, 255, 0.95) 100%
+        );
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.08);
+      }
+
+      .final-prediction {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 1rem 0;
+      }
+
+      .warning {
+        color: var(--danger-color);
+      }
+
+      .disclaimer-box {
+        background: linear-gradient(135deg, #fff9eb 0%, #fff 100%);
+        border: 1px solid var(--warning-color);
+        padding: 1.5rem;
+        border-radius: 10px;
+        margin: 1.5rem 0;
+      }
+
+      .toggle-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        padding: 0.8rem;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border-radius: 8px;
+      }
+
+      .toggle-btn:hover {
+        background: rgba(67, 97, 238, 0.1);
+      }
+
+      .hospital-item p {
+        margin: 0.5rem 0;
+        color: var(--light-text);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .footer {
+        width: 100%;
+        padding: 2rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          var(--secondary-color) 100%
+        );
+        color: var(--white);
+        text-align: center;
+        margin-top: 4rem;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .footer-section {
+        text-align: center;
+      }
+
+      .footer-section h3 {
+        color: var(--white);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .footer-section p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .footer .heart {
+        color: #ff4d6d;
+        animation: heartbeat 1.5s ease infinite;
+        display: inline-block;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .social-links a {
+        color: var(--white);
+        text-decoration: none;
+        transition: transform 0.3s ease;
+      }
+
+      .social-links a:hover {
+        transform: translateY(-3px);
+      }
+
+      @keyframes heartbeat {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        background: var(--primary-color);
+        color: var(--white);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .contact-btn:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+      }
+
+      .nav-header {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-header .logo a {
+        transition: transform 0.3s ease;
+      }
+
+      .nav-header .logo a:hover {
+        transform: translateY(-2px);
+      }
+
+      .user-section {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
+
+      .user-info {
+        text-align: right;
+      }
+
+      .user-name {
+        font-weight: 600;
+        color: var(--dark-text);
+      }
+
+      .user-email {
+        font-size: 0.9rem;
+        color: var(--light-text);
+      }
+
+      .logout-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary-color);
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .logout-btn:hover {
+        background: rgba(67, 97, 238, 0.15);
+        transform: translateY(-2px);
+      }
+
+      /* Improved form styling */
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-family: "Poppins", sans-serif;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+      }
+
+      /* File input styling */
+      .selected-file-name {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--light-text);
+      }
+
+      .file-input-trigger i {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .file-input-trigger p {
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+      }
+
+      /* Add animation for drag states */
+      .file-input-trigger {
+        transition: all 0.3s ease;
+      }
+
+      .selected-file {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: var(--light-text);
+      }
+
+      .file-selected {
+        border-color: var(--success-color);
+        background: rgba(6, 214, 160, 0.05);
+      }
+
+      /* Stats Grid */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        margin-top: 3rem;
+        animation: fadeInUp 1s ease;
+      }
+
+      .stat-item {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.08);
+        transition: transform 0.3s ease;
+      }
+
+      .stat-item:hover {
+        transform: translateY(-5px);
+      }
+
+      .stat-item h3 {
+        font-size: 2.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+      }
+
+      /* Contact Cards */
+      .contact-cards {
+        display: grid;
+        gap: 2rem;
+      }
+
+      .contact-form-container {
+        background: var(--white);
+        padding: 3rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.08);
+      }
+
+      @media (max-width: 768px) {
+        .tech-features,
+        .contact-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .section-container {
+          padding: 4rem 1rem;
+        }
+
+        .section-header h2 {
+          font-size: 2rem;
+        }
+      }
+
+      .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.98);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+      }
+
+      .loading-content {
+        text-align: center;
+        padding: 2rem;
+        max-width: 500px;
+      }
+
+      .loading-spinner {
+        width: 80px;
+        height: 80px;
+        border: 5px solid rgba(67, 97, 238, 0.1);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        margin: 0 auto 2rem;
+        animation: spin 1s linear infinite;
+      }
+
+      .loading-content h2 {
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        font-size: 2rem;
+      }
+
+      .loading-text {
+        color: var(--light-text);
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+      }
+
+      .loading-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        text-align: left;
+      }
+
+      .step {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: rgba(67, 97, 238, 0.05);
+        border-radius: 10px;
+        animation: stepFadeIn 0.5s ease forwards;
+        opacity: 0;
+      }
+
+      .step:nth-child(1) {
+        animation-delay: 0.5s;
+      }
+      .step:nth-child(2) {
+        animation-delay: 1s;
+      }
+      .step:nth-child(3) {
+        animation-delay: 1.5s;
+      }
+
+      .step-icon {
+        font-size: 1.5rem;
+      }
+
+      .step-text {
+        color: var(--dark-text);
+        font-weight: 500;
+      }
+
+      @keyframes stepFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .history-section {
+        max-height: 600px;
+        overflow-y: auto;
+      }
+
+      .analyses-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .analysis-item {
+        padding: 1rem;
+        border-radius: 10px;
+        background: rgba(67, 97, 238, 0.05);
+        transition: transform 0.3s ease;
+      }
+
+      .analysis-item:hover {
+        transform: translateY(-2px);
+      }
+
+      .analysis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+
+      .timestamp {
+        font-size: 0.9rem;
+        color: var(--light-text);
+      }
+
+      .analysis-result {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .analysis-result.warning {
+        color: var(--danger-color);
+      }
+
+      .action-section {
+        text-align: center;
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+      }
+
+      .btn-secondary:hover {
+        background: rgba(67, 97, 238, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav-header">
+        <div class="logo">
+          <a
+            href="{{ url_for('landing') }}"
+            style="
+              text-decoration: none;
+              display: flex;
+              align-items: center;
+              gap: 0.5rem;
+            "
+          >
+            <span style="font-size: 1.8rem">🫁</span>
+            <h2
+              style="
+                margin: 0;
+                background: linear-gradient(
+                  135deg,
+                  var(--primary-color),
+                  var(--accent-color)
+                );
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+              "
+            >
+              PneumoDetect AI
+            </h2>
+          </a>
+        </div>
+        <div class="user-section">
+          <div class="user-info">
+            <div class="user-name">{{ current_user.name }}</div>
+            <div class="user-email">{{ current_user.email }}</div>
+          </div>
+          <a href="{{ url_for('logout') }}" class="logout-btn">
+            <i>🚪</i> Logout
+          </a>
+        </div>
+      </div>
+
+      <header class="app-header">
+        <h1>Pneumonia Detection AI</h1>
+        <p>Upload a chest X-ray image for instant pneumonia detection</p>
+      </header>
+
+      <div class="main-content">
+        {% if show_upload %}
+        <!-- Upload Section -->
+        <div class="card upload-section">
+          <h2>Upload X-Ray Image</h2>
+          <form
+            method="POST"
+            action="{{ url_for('index') }}"
+            enctype="multipart/form-data"
+          >
+            <div class="form-group">
+              <label for="patient_name">Patient Name</label>
+              <input
+                type="text"
+                id="patient_name"
+                name="patient_name"
+                class="form-control"
+                required
+                placeholder="Enter patient's name"
+              />
+            </div>
+            <div class="file-input-container">
+              <label for="file-upload" class="file-input-trigger">
+                <span class="upload-icon">📁</span>
+                <span class="upload-text"
+                  >Click or drag chest X-ray image here</span
+                >
+                <span class="upload-hint">Supported formats: JPEG, PNG</span>
+                <span class="selected-file" id="selected-file-name"
+                  >No file chosen</span
+                >
+              </label>
+              <input
+                type="file"
+                id="file-upload"
+                name="file"
+                accept="image/*"
+                required
+                style="display: none"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze Image</button>
+          </form>
+        </div>
+
+        <!-- Analysis History -->
+        <div class="card history-section">
+          <h2>Previous Analyses</h2>
+          {% if analyses %}
+          <div class="analyses-list">
+            {% for analysis in analyses %}
+            <div class="analysis-item">
+              <div class="analysis-header">
+                <h3>{{ analysis.patient_name }}</h3>
+                <span class="timestamp"
+                  >{{ analysis.timestamp.strftime('%Y-%m-%d %H:%M') }}</span
+                >
+              </div>
+              <div
+                class="analysis-result {% if analysis.prediction == 'Pneumonia' %}warning{% endif %}"
+              >
+                <span class="prediction-label">Prediction:</span>
+                <span class="prediction-value">{{ analysis.prediction }}</span>
+                {% if analysis.prediction == 'Pneumonia' %}
+                <span class="warning-icon">⚠️</span>
+                {% endif %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+          {% else %}
+          <p class="no-analyses">No previous analyses found</p>
+          {% endif %}
+        </div>
+
+        {% else %}
+        <!-- Results Section -->
+        <div class="card results-section">
+          {% if final_prediction %}
+          <div
+            class="result-card {% if final_prediction == 'Pneumonia' %}pneumonia-detected{% endif %}"
+          >
+            <h2>Results for {{ patient_name }}</h2>
+
+            <div class="prediction-summary">
+              <div
+                class="final-prediction {% if final_prediction == 'Pneumonia' %}warning{% endif %}"
+              >
+                <span class="prediction-label">Final Prediction:</span>
+                <span class="prediction-value">{{ final_prediction }}</span>
+                {% if final_prediction == 'Pneumonia' %}
+                <span class="warning-icon">⚠️</span>
+                {% endif %}
+              </div>
+            </div>
+
+            <button
+              onclick="toggleModelPredictions()"
+              class="toggle-btn"
+              id="toggleModelsBtn"
+            >
+              Show Model Details ▼
+            </button>
+
+            <div
+              class="model-predictions"
+              id="modelPredictions"
+              style="display: none"
+            >
+              <h3>Individual Model Predictions:</h3>
+              <ul class="result-list">
+                {% for model_name, prediction in results.items() %}
+                <li
+                  class="{% if prediction == 'Pneumonia' %}warning{% endif %}"
+                >
+                  <span class="model-name">{{ model_name }}</span>
+                  <span class="model-prediction">{{ prediction }}</span>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+
+            {% if final_prediction == 'Pneumonia' %}
+            <div class="action-buttons">
+              <div class="disclaimer-box">
+                <p class="disclaimer-text">
+                  ⚠️ <strong>Medical Attention Required:</strong> The AI models
+                  suggest signs of pneumonia. Please seek immediate medical
+                  attention for proper diagnosis and treatment.
+                </p>
+              </div>
+              <button
+                id="showHospitalsBtn"
+                class="btn btn-danger"
+                onclick="findNearbyHospitals()"
+              >
+                🏥 Find Nearest Hospitals
+              </button>
+            </div>
+            {% endif %}
+          </div>
+
+          <div
+            id="hospitalsSection"
+            class="hospitals-section"
+            style="display: none"
+          >
+            <div id="locationStatus" class="location-status"></div>
+            <div id="hospitalsList" class="hospitals-list"></div>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="card action-section">
+          <h3>What would you like to do next?</h3>
+          <div class="action-buttons">
+            <a href="{{ url_for('index') }}" class="btn btn-primary"
+              >Analyze Another X-Ray</a
+            >
+            <button onclick="window.print()" class="btn btn-secondary">
+              Print Results
+            </button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+
+    <div id="loading-overlay" class="loading-overlay" style="display: none">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <h2>Analyzing X-Ray</h2>
+        <p class="loading-text">Our AI models are processing your image...</p>
+        <div class="loading-steps">
+          <div class="step">
+            <span class="step-icon">🔍</span>
+            <span class="step-text">Preprocessing Image</span>
+          </div>
+          <div class="step">
+            <span class="step-icon">🧠</span>
+            <span class="step-text">Running AI Models</span>
+          </div>
+          <div class="step">
+            <span class="step-icon">📊</span>
+            <span class="step-text">Analyzing Results</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const fileInput = document.getElementById("file-upload");
+        const form = document.querySelector("form");
+        const fileNameDisplay = document.getElementById("selected-file-name");
+        const fileTrigger = document.querySelector(".file-input-trigger");
+        const loadingOverlay = document.getElementById("loading-overlay");
+
+        fileInput.addEventListener("change", function (e) {
+          if (e.target.files && e.target.files[0]) {
+            fileNameDisplay.textContent = e.target.files[0].name;
+            fileTrigger.classList.add("file-selected");
+          }
+        });
+
+        form.addEventListener("submit", function (e) {
+          if (!fileInput.files || !fileInput.files[0]) {
+            e.preventDefault();
+            alert("Please select a file");
+          } else {
+            loadingOverlay.style.display = "flex";
+          }
+        });
+      });
+
+      function toggleModelPredictions() {
+        const modelPredictions = document.getElementById("modelPredictions");
+        const toggleBtn = document.getElementById("toggleModelsBtn");
+
+        if (modelPredictions.style.display === "none") {
+          modelPredictions.style.display = "block";
+          toggleBtn.textContent = "Hide Model Details ▲";
+        } else {
+          modelPredictions.style.display = "none";
+          toggleBtn.textContent = "Show Model Details ▼";
+        }
+      }
+
+      function findNearbyHospitals() {
+        const hospitalsSection = document.getElementById("hospitalsSection");
+        const statusElement = document.getElementById("locationStatus");
+        const hospitalsListElement = document.getElementById("hospitalsList");
+        const button = document.getElementById("showHospitalsBtn");
+
+        if (hospitalsSection.style.display === "none") {
+          hospitalsSection.style.display = "block";
+          button.textContent = "🏥 Hide Hospitals";
+
+          if (!navigator.geolocation) {
+            statusElement.textContent =
+              "❌ Geolocation is not supported by your browser";
+            return;
+          }
+
+          statusElement.innerHTML =
+            '🔍 Getting your location... <div class="loading"></div>';
+
+          navigator.geolocation.getCurrentPosition(
+            async (position) => {
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+
+              statusElement.innerHTML =
+                '🔍 Searching for hospitals... <div class="loading"></div>';
+
+              try {
+                const response = await fetch("/get_hospitals", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude,
+                  }),
+                });
+
+                const hospitals = await response.json();
+
+                if (hospitals && hospitals.length > 0) {
+                  hospitalsListElement.innerHTML = `
+                    <h3>Found ${hospitals.length} Nearby Hospitals</h3>
+                    ${hospitals
+                      .map(
+                        (hospital) => `
+                      <div class="hospital-item">
+                        <h4>🏥 ${hospital.name}</h4>
+                        <p>📍 ${hospital.address}</p>
+                        <p>📏 ${hospital.distance}</p>
+                        <div class="hospital-contact">
+                          <h5>Contact Information:</h5>
+                          ${
+                            hospital.phone !== "Phone not available"
+                              ? `<p>📞 <a href="tel:${hospital.phone}" class="contact-btn">
+                              Call Hospital
+                            </a></p>`
+                              : `<p>📞 Contact information not available</p>`
+                          }
+                          ${
+                            hospital.emergency
+                              ? `<p class="emergency">🚑 Emergency Services Available</p>`
+                              : ""
+                          }
+                          ${
+                            hospital.website
+                              ? `<p><a href="${hospital.website}" target="_blank" class="contact-btn">
+                              Visit Website
+                            </a></p>`
+                              : ""
+                          }
+                          ${
+                            hospital.email
+                              ? `<p><a href="mailto:${hospital.email}" class="contact-btn">
+                              Send Email
+                            </a></p>`
+                              : ""
+                          }
+                        </div>
+                      </div>
+                    `
+                      )
+                      .join("")}
+                  `;
+                  statusElement.style.display = "none";
+                } else {
+                  statusElement.textContent =
+                    "No hospitals found in the immediate area. Showing major hospitals instead.";
+                }
+              } catch (error) {
+                statusElement.textContent = `❌ Error finding hospitals: ${error.message}`;
+              }
+            },
+            (error) => {
+              let errorMessage = "❌ Error getting location: ";
+              switch (error.code) {
+                case error.PERMISSION_DENIED:
+                  errorMessage +=
+                    "Please allow location access to find nearby hospitals";
+                  break;
+                case error.POSITION_UNAVAILABLE:
+                  errorMessage += "Location information is unavailable";
+                  break;
+                case error.TIMEOUT:
+                  errorMessage += "Location request timed out";
+                  break;
+                default:
+                  errorMessage += "Unknown error occurred";
+              }
+              statusElement.textContent = errorMessage;
+            }
+          );
+        } else {
+          hospitalsSection.style.display = "none";
+          button.textContent = "🏥 Find Nearest Hospitals";
+        }
+      }
+    </script>
+  </body>
+</html>

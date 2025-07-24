@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Pneumonia Detection</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --accent-color: #4895ef;
+        --danger-color: #ef476f;
+        --success-color: #06d6a0;
+        --warning-color: #ffd60a;
+        --light-bg: #f8f9fa;
+        --dark-text: #2b2d42;
+        --light-text: #8d99ae;
+        --white: #ffffff;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        line-height: 1.6;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(135deg, #f6f8ff 0%, #ffffff 100%);
+        color: var(--dark-text);
+      }
+
+      .container {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .auth-card {
+        width: 100%;
+        background: var(--white);
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .auth-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: linear-gradient(
+          90deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+      }
+
+      .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .auth-header h1 {
+        color: var(--primary-color);
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .auth-header p {
+        color: var(--light-text);
+        font-size: 1.1rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.5rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+        font-weight: 500;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 1rem;
+        border: 2px solid #e9ecef;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+      }
+
+      .btn {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 10px;
+        font-size: 1.1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-family: "Poppins", sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--accent-color)
+        );
+        color: var(--white);
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+      }
+
+      .auth-footer {
+        text-align: center;
+        margin-top: 1.5rem;
+      }
+
+      .auth-footer a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .auth-footer a:hover {
+        color: var(--secondary-color);
+      }
+
+      .flash-messages {
+        margin-bottom: 1.5rem;
+      }
+
+      .flash {
+        padding: 1rem;
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        font-weight: 500;
+      }
+
+      .flash-error {
+        background-color: #fff5f5;
+        color: var(--danger-color);
+        border: 1px solid var(--danger-color);
+      }
+
+      .flash-success {
+        background-color: #f0fff4;
+        color: var(--success-color);
+        border: 1px solid var(--success-color);
+      }
+
+      /* Add responsive design */
+      @media (max-width: 600px) {
+        .container {
+          padding: 1rem;
+        }
+
+        .auth-card {
+          padding: 2rem;
+        }
+      }
+
+      /* Footer styles from shared footer */
+      .footer {
+        width: 100%;
+        padding: 2rem;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color) 0%,
+          var(--accent-color) 100%
+        );
+        color: var(--white);
+        text-align: center;
+        margin-top: auto;
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+        align-items: center;
+      }
+
+      .footer-section {
+        text-align: center;
+      }
+
+      .footer-section h3 {
+        color: var(--white);
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+      }
+
+      .footer-section p {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      .footer .heart {
+        color: #ff4d6d;
+        animation: heartbeat 1.5s ease infinite;
+        display: inline-block;
+      }
+
+      .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 0.5rem;
+      }
+
+      .social-links a {
+        color: var(--white);
+        text-decoration: none;
+        transition: transform 0.3s ease;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .social-links a:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      @keyframes heartbeat {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .footer-content {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+
+        .container {
+          padding: 1rem;
+        }
+
+        .auth-card {
+          padding: 2rem;
+        }
+      }
+
+      .nav-header {
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: var(--white);
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .nav-header .logo a {
+        transition: transform 0.3s ease;
+      }
+
+      .nav-header .logo a:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="auth-card">
+        <div class="nav-header">
+          <div class="logo">
+            <a
+              href="{{ url_for('landing') }}"
+              style="
+                text-decoration: none;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+              "
+            >
+              <span style="font-size: 1.8rem">🫁</span>
+              <h2
+                style="
+                  margin: 0;
+                  background: linear-gradient(
+                    135deg,
+                    var(--primary-color),
+                    var(--accent-color)
+                  );
+                  -webkit-background-clip: text;
+                  background-clip: text;
+                  -webkit-text-fill-color: transparent;
+                "
+              >
+                PneumoDetect AI
+              </h2>
+            </a>
+          </div>
+        </div>
+
+        <div class="auth-header">
+          <h1>Welcome Back</h1>
+          <p>Login to access your account</p>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %}
+        <div class="flash-messages">
+          {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </div>
+        {% endif %} {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+
+        <div class="auth-footer">
+          <p>
+            Don't have an account?
+            <a href="{{ url_for('register') }}">Register here</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+  </body>
+</html>

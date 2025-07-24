@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis Details - {{ analysis.patient_name }}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Basic styles */
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 20px;
+      }
+      .detail-container {
+        max-width: 800px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+      }
+      .xray-image {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="detail-container">
+      <h1>Analysis Details</h1>
+      <img
+        src="{{ url_for('serve_image', analysis_id=analysis.id) }}"
+        alt="X-ray Image"
+        class="xray-image"
+      />
+      <p><strong>Patient Name:</strong> {{ analysis.patient_name }}</p>
+      <p><strong>Prediction:</strong> {{ analysis.prediction }}</p>
+      <p>
+        <strong>Timestamp:</strong> {{ analysis.timestamp.strftime('%Y-%m-%d
+        %H:%M') }}
+      </p>
+      <a href="{{ url_for('index') }}">Back to Dashboard</a>
+    </div>
+  </body>
+</html>
