@@ -1,27 +1,17 @@
-Here's a **professional and polished `README.md`** for your pneumonia prediction web app built with Flask:
 
----
-
-```markdown
-# 🩺 Pneumonia Prediction Web App
+ 🩺 Pneumonia Prediction Web App
 
 A web-based application that predicts pneumonia from chest X-ray images using state-of-the-art deep learning models. Designed to assist healthcare professionals and patients with early and accurate detection of pneumonia.
 
 ---
 
-## 🚀 Features
+🚀 Features
 
 - 📁 Upload chest X-ray images for instant analysis
 - 🤖 Multiple trained CNN models for high accuracy
 - 💡 Real-time predictions with detailed output
 - 🧼 Clean and responsive web interface (HTML/CSS/JS)
 - 🛠️ Built using Python, Flask, and modern frontend technologies
-
----
-
-## 📷 Demo
-
-![Demo Screenshot](static/images/demo.png) <!-- (replace with your actual path or hosted image URL) -->
 
 ---
 
@@ -38,36 +28,36 @@ A web-based application that predicts pneumonia from chest X-ray images using st
 
 ---
 
-## 📦 Installation & Setup
+📦 Installation & Setup
 
-1. **Clone the repository**
+1. Clone the repository
 
-```bash
+```
 git clone https://github.com/your-username/pneumonia-prediction-app.git
 cd pneumonia-prediction-app
 ```
 
-2. **Create virtual environment (optional but recommended)**
+2. Create virtual environment (optional but recommended)
 
-```bash
+```
 python -m venv venv
 venv\Scripts\activate  # On Windows
 source venv/bin/activate  # On macOS/Linux
 ```
 
-3. **Install dependencies**
+3. Install dependencies
 
-```bash
+```
 pip install -r current_requirements.txt
 ```
 
-4. **Run the app**
+4. Run the app
 
-```bash
+```
 python app.py
 ```
 
-5. **Access in browser**
+5. Access in browser
 
 ```
 http://127.0.0.1:5000/
@@ -75,7 +65,7 @@ http://127.0.0.1:5000/
 
 ---
 
-## 🧠 How It Works
+🧠 How It Works
 
 1. Upload a chest X-ray image (JPG/PNG).
 2. The image is processed through one or more CNN models (e.g., ResNet, VGG).
@@ -84,7 +74,7 @@ http://127.0.0.1:5000/
 
 ---
 
-## ✅ Requirements
+✅ Requirements
 
 - Python 3.7+
 - Flask
@@ -94,7 +84,7 @@ http://127.0.0.1:5000/
 
 ---
 
-## 📌 Notes
+📌 Notes
 
 - Ensure the model files are placed inside the `models/` directory.
 - You can swap or add models as needed — just update the loading code in `app.py`.
@@ -102,37 +92,27 @@ http://127.0.0.1:5000/
 
 ---
 
-## 📄 License
+📄 License
 
 This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 🤝 Contributing
+🤝 Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change or improve.
 
 ---
 
-## 👨‍⚕️ Disclaimer
+👨‍⚕️ Disclaimer
 
 > This tool is for **educational and research purposes only**. It should not be used as a substitute for professional medical diagnosis or treatment.
 
 ---
 
-## ✨ Acknowledgements
+✨ Acknowledgements
 
 - Chest X-ray datasets (e.g., NIH ChestX-ray14)
 - Open-source CNN architectures
 - Flask and Python community
 ```
-
----
-
-Let me know if you'd like to include:
-- badges (e.g., Python version, Flask)
-- hosted demo link
-- screenshots
-- or specific model names (e.g., `ResNet50`, `VGG16`, etc.)
-
-I can update the README accordingly.
